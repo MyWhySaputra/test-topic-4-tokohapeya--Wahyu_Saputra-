@@ -30,10 +30,7 @@ async function CheckProfile(req, res, next) {
             where: {
                 id: Number(req.params.id)
             }
-        }),
-        name: Joi.string().alphanum().max(255).required(),
-        email: Joi.string().email().required(),
-        password: Joi.string().alphanum().min(8).required()
+        })
     })
 
     const { error } = schema.validate(req.body)
