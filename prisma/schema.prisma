@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(255)
+  email     String    @db.VarChar(100) @unique
+  password  String    @db.VarChar(50)
+  createAt  DateTime  @default(now())
+  updateAt  DateTime? @default(now())
+  deletedAt DateTime?
+  profile   profiles[]
+  trasactions transactions[]
+}
+
+model profiles {
+  id              Int       @id @default(autoincrement())
+  user_id         Int       @unique
+  picture         String    @db.VarChar(100)
+  birth_day       DateTime  @db.Date
+  address         String    @db.Text
+  createAt        DateTime  @default(now())
+  updateAt        DateTime? @default(now())
+  deletedAt       DateTime?
+  user users @relation(fields: [user_id], references: [id])
+}
+
+model transactions {
+  id                  Int       @id @default(autoincrement())
+  user_id             Int       @unique
+  trasaction_date     DateTime  @db.Date
+  promo_code          String    @db.VarChar(100) @unique
+  amount              BigInt    @db.BigInt
+  is_paid             Boolean   @default(false)
+  createAt            DateTime  @default(now())
+  updateAt            DateTime? @default(now())
+  deletedAt           DateTime?
+  user users @relation(fields: [user_id], references: [id])
+  promo_codee promo_code @relation(fields: [promo_code], references: [code])
+  transaction_type  transactions_type_handphone[]
+}
+
+model promo_code {
+  id                  Int       @id @default(autoincrement())
+  code                String    @db.VarChar(100) @unique
+  discount_amount     Int       @db.Integer
+  createAt            DateTime  @default(now())
+  updateAt            DateTime? @default(now())
+  deletedAt           DateTime?
+  trasactions transactions[]
+}
+
+model transactions_type_handphone {
+  id_transaction      Int       @unique
+  id_type_handphone   Int       @unique
+  amount              Int       @db.Integer
+  createAt            DateTime  @default(now())
+  updateAt            DateTime? @default(now())
+  deletedAt           DateTime?
+  transaction transactions @relation(fields: [id_transaction], references: [id])
+  type_handphone phone_type @relation(fields: [id_type_handphone], references: [id])
+}
+
+model phone_type {
+  id                  Int       @id @default(autoincrement())
+  id_phone_brand      Int       @unique
+  name                String    @db.VarChar(100)
+  price               BigInt    @db.BigInt
+  createAt            DateTime  @default(now())
+  updateAt            DateTime? @default(now())
+  deletedAt           DateTime?
+  trasactions transactions_type_handphone[]
+  phone_brand phone_brand @relation(fields: [id_phone_brand], references: [id])
+}
+
+model phone_brand {
+  id                  Int       @id @default(autoincrement())
+  name                String    @db.VarChar(100)
+  country_origin      String    @db.VarChar(100)
+  since               DateTime  @db.Date
+  createAt            DateTime  @default(now())
+  updateAt            DateTime? @default(now())
+  deletedAt           DateTime?
+  phone_type phone_type[]
+}
