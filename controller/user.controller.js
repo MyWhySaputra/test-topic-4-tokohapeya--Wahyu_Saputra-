@@ -14,7 +14,7 @@ async function Insert(req, res) {
     }
 
     try {
-        const user = await prisma.user.create({
+        const user = await prisma.users.create({
             data: payload
         })
 
@@ -51,15 +51,8 @@ async function Get(req, res) {
 
     try {
 
-        const users = await prisma.user.findMany({
+        const users = await prisma.users.findMany({
             where: payload
-            // include: {
-            //     posts: {
-            //         where: {
-            //             title: 'PEMILU SERU ABIS'
-            //         }
-            //     }
-            // }
         });
 
         let resp = ResponseTemplate(users, 'success', null, 200)
@@ -80,7 +73,7 @@ async function GetByPK(req, res) {
     const { id } = req.params
 
     try {
-        const users = await prisma.user.findUnique({
+        const users = await prisma.users.findUnique({
             where: {
                 id: Number(id)
             },
@@ -126,7 +119,7 @@ async function Update(req, res) {
 
 
     try {
-        const user = await prisma.user.update({
+        const user = await prisma.users.update({
             where: {
                 id: Number(id)
             },
@@ -151,7 +144,7 @@ async function Delete(req, res) {
     const { id } = req.params
 
     try {
-        const user = await prisma.user.delete({
+        const user = await prisma.users.delete({
             where: {
                 id: Number(id)
             },
